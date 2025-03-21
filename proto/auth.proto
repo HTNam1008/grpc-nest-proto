@@ -1,0 +1,137 @@
+syntax = "proto3";
+
+package auth;
+
+service AuthService {
+  rpc Register (RegisterRequest) returns (RegisterResponse) {}
+  rpc Login (LoginRequest) returns (LoginResponse) {}
+  rpc VerifyOtp (VerifyOtpRequest) returns (VerifyOtpResponse) {}
+  rpc ResendOtp (ResendOtpRequest) returns (ResendOtpResponse) {}
+  rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse) {}
+  rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse) {}
+  rpc Logout () returns (LogoutResponse) {}
+  rpc ForgotPassword (ForgotPasswordRequest) returns (ForgotPasswordResponse) {}
+}
+
+// Register
+message RegisterRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+  string re_password = 4 [json_name = "re_password"];
+  string phone = 5;
+  int32 role = 6;
+  repeated int32 province_id = 7 [json_name = "province_id"];
+}
+
+message RegisterResponse {
+  int32 status_code = 1;
+  string message = 2;
+  RegisterData data = 3;
+}
+
+message RegisterData {
+  string request_token = 1 [json_name = "request_token"];
+  int32 remaining_attempts = 2 [json_name = "remaining_attempts"];
+  int32 resend_allowed_in = 3 [json_name = "resend_allowed_in"];
+}
+
+// Login
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  int32 status_code = 1;         // Trường này sẽ được chuyển thành "statusCode" trong JSON
+  string message = 2;            // Giữ nguyên tên "message" trong JSON
+  LoginData data = 3;            // Đối tượng con, tên "data" trong JSON
+}
+
+message LoginData {
+  string access_token = 1 [json_name = "access_token"];  // Đảm bảo tên JSON là "access_token"
+  string refresh_token = 2 [json_name = "refresh_token"]; // Đảm bảo tên JSON là "refresh_token"
+}
+
+// verify otp
+message VerifyOtpRequest {
+  string email = 1;
+  string otp = 2;
+  string type = 3; // "register" or "login"
+  string request_token = 4 [json_name = "request_token"];
+}
+
+message VerifyOtpResponse {
+  int32 status_code = 1;
+  repeated string error = 2;
+  int32 userId = 3;
+}
+
+// resend otp
+message ResendOtpRequest {
+  string email = 1;
+  string type = 2; // "register" or "login"
+  string request_token = 3 [json_name = "request_token"];
+}
+
+message ResendOtpResponse {
+  int32 status_code = 1;
+  string message = 2;
+  ResendOtpData data = 3;
+}
+
+message ResendOtpData {
+  int32 remaining_attempts = 4 [json_name = "remaining_attempts"];
+  int32 resend_allowed_in = 5 [json_name = "resend_allowed_in"];
+}
+
+// Reset Password
+message ResetPasswordRequest {
+  string reset_token = 1;
+  string new_password = 2;
+  string confirm_password = 3;
+}
+
+message ResetPasswordResponse {
+  int32 status_code = 1;
+  string message = 2;
+}
+
+// Refresh Token
+message RefreshTokenRequest {
+  string refresh_token = 1 [json_name = "refresh_token"];
+}
+
+message RefreshTokenResponse {
+  int32 status_code = 1;
+  string message = 2;
+  message RefreshTokenData = 3;
+}
+
+message RefreshTokenData {
+  string access_token = 1 [json_name = "access_token"];
+  string refresh_token = 2 [json_name = "refresh_token"];
+}
+
+// Logout
+message LogoutResponse {
+  int32 status_code = 1;
+  string message = 2;
+}
+
+// Forgot Password
+message ForgotPasswordRequest {
+  string email = 1;
+}
+
+message ForgotPasswordResponse {
+  int32 status_code = 1;
+  string message = 2;
+  message ForgotPasswordData = 3;
+}
+
+message ForgotPasswordData {
+  string request_token = 1 [json_name = "request_token"];
+  int32 remaining_attempts = 2 [json_name = "remaining_attempts"];
+  int32 resend_allowed_in = 3 [json_name = "resend_allowed_in"];
+}
