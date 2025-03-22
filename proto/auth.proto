@@ -145,6 +145,6 @@ message ValidateRequest {
 
 message ValidateResponse {
   int32 status_code = 1;
-  repeated string message = 2;
+  string message = 2;
   int32 userId = 3;
 }
