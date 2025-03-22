@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package auth;
 
+import "google/protobuf/empty.proto";
+
 service AuthService {
   rpc Register (RegisterRequest) returns (RegisterResponse) {}
   rpc Login (LoginRequest) returns (LoginResponse) {}
@@ -9,7 +11,7 @@ service AuthService {
   rpc ResendOtp (ResendOtpRequest) returns (ResendOtpResponse) {}
   rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse) {}
   rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse) {}
-  rpc Logout () returns (LogoutResponse) {}
+  rpc Logout (google.protobuf.Empty) returns (LogoutResponse) {}
   rpc ForgotPassword (ForgotPasswordRequest) returns (ForgotPasswordResponse) {}
 }
 
@@ -105,7 +107,7 @@ message RefreshTokenRequest {
 message RefreshTokenResponse {
   int32 status_code = 1;
   string message = 2;
-  message RefreshTokenData = 3;
+  RefreshTokenData data  = 3;
 }
 
 message RefreshTokenData {
@@ -127,7 +129,7 @@ message ForgotPasswordRequest {
 message ForgotPasswordResponse {
   int32 status_code = 1;
   string message = 2;
-  message ForgotPasswordData = 3;
+  ForgotPasswordData data = 3;
 }
 
 message ForgotPasswordData {
